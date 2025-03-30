@@ -4,40 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escanear Código QR</title>
-    <!-- Asegúrate de que la librería html5-qrcode se carga correctamente desde el CDN -->
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
     <h1>Escanear Código QR</h1>
     <div id="reader" style="width: 100%; height: 400px; border: 1px solid black;"></div>
     <p id="result">Esperando un código QR...</p>
 
+    <!-- Usar el CDN oficial de html5-qrcode -->
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    
     <script>
-        // Esto asegurará que el script se ejecute solo después de que el DOM esté completamente cargado
         document.addEventListener('DOMContentLoaded', function () {
-            // Crear la instancia de Html5QrcodeScanner
+            // Verifica si la librería se cargó correctamente
+            if (typeof Html5Qrcode === "undefined") {
+                console.error("La librería Html5Qrcode no se ha cargado correctamente.");
+                return;
+            }
+
             const html5QrCode = new Html5Qrcode("reader");
 
-            // Definir la función de éxito cuando un QR es escaneado
+            // Función de éxito cuando se escanea un QR
             const onScanSuccess = (decodedText, decodedResult) => {
-                // Mostrar el texto que contiene el QR
                 document.getElementById("result").textContent = `QR detectado: ${decodedText}`;
             };
 
-            // Definir la función de error en caso de problemas con el escaneo
+            // Función de error
             const onScanError = (errorMessage) => {
                 console.warn(errorMessage);
             };
 
-            // Iniciar la cámara y comenzar el escaneo
+            // Iniciar el escaneo
             html5QrCode.start(
-                { facingMode: "environment" },  // Usar la cámara trasera (ideal para teléfonos)
+                { facingMode: "environment" },
                 {
-                    fps: 10,  // Cuántos fotogramas por segundo procesar
-                    qrbox: 250 // Tamaño del área del escáner en la pantalla
+                    fps: 10,
+                    qrbox: 250
                 },
-                onScanSuccess,  // Callback cuando se detecta un QR
-                onScanError  // Callback cuando ocurre un error
+                onScanSuccess,
+                onScanError
             ).catch(err => {
                 console.error("Error al iniciar el escáner: ", err);
             });
